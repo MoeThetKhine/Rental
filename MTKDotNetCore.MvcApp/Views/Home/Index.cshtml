@@ -1,0 +1,29 @@
+﻿@model List<BlogModel>;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Blog Id</th>
+            <th>Blog Title</th>
+            <th>Blog Author</th>
+            <th>Blog Content</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.BlogId</td>
+                <td>@item.BlogTitle</td>
+                <td>@item.BlogAuthor</td>
+                <td>@item.BlogContent</td>
+            </tr>
+        }
+    </tbody>
+</table>
