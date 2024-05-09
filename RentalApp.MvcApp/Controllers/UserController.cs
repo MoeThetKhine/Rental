@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using RentalApp.MvcApp.Models.Entity;
 using RentalApp.MvcApp.Models.Request;
 using RentalApp.MvcApp.Models.ResponseModel;
+using RentalApp.MvcApp.Services;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -12,10 +13,12 @@ namespace RentalApp.MvcApp.Controllers
 
     {
         private readonly IConfiguration _configuration;
+        private readonly AdoDotNetService _adoDotNetService;
 
-        public UserController(IConfiguration configuration)
+        public UserController(IConfiguration configuration, AdoDotNetService adoDotNetService)
         {
             _configuration = configuration;
+            _adoDotNetService = adoDotNetService;
         }
 
         [ActionName("LoginPage")]
@@ -83,10 +86,11 @@ namespace RentalApp.MvcApp.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
         [HttpPost]
         public IActionResult Update(UpdateUserRequestModel requestModel)
         {
-            string cleanedPhoneNumber = new string(requestModel.PhoneNumber.Where(char.IsDigit).ToArray());
+            string cleanedPhoneNumber = new(requestModel.PhoneNumber.Where(char.IsDigit).ToArray());
 
             try
             {
@@ -105,12 +109,29 @@ namespace RentalApp.MvcApp.Controllers
                     TempData["error"] = "Phone Number should be 11 numbers without any space";
                     return RedirectToAction("UserManagement");
                 }
-                if (IsPhoneNumberDuplicate(requestModel.PhoneNumber))
+
+                if (IsPhoneNumberDuplicate(requestModel.UserId, requestModel.PhoneNumber))
                 {
                     TempData["error"] = "User with this Phone Number already exits";
                     return RedirectToAction("UserManagement");
                 }
 
+                string noChangesCaseQuery = @"SELECT * FROM Customer WHERE UserName = @UserName
+AND Address = @Address AND PhoneNumber = @PhoneNumber WHERE UserId = @UserId AND IsActive = @IsActive";
+                List<SqlParameter> parameters = new()
+                {
+                    new SqlParameter("@UserName", requestModel.UserName),
+                    new SqlParameter("@Address", requestModel.Address),
+                    new SqlParameter("@PhoneNumber", requestModel.PhoneNumber),
+                    new SqlParameter("@UserId", requestModel.UserId),
+                    new SqlParameter("@IsActive", true)
+                };
+                DataTable dt = _adoDotNetService.QueryFirstOrDefault(noChangesCaseQuery, parameters.ToArray());
+                if (dt.Rows.Count > 0)
+                {
+                    TempData["warning"] = "No Changes...";
+                    return RedirectToAction("UserManagement");
+                }
 
                 SqlConnection conn = new(_configuration.GetConnectionString("DbConnection"));
                 conn.Open();
@@ -229,6 +250,7 @@ WHERE UserId = @UserId AND IsActive = @IsActive";
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Create(UserDataModel dataModel)
         {
@@ -251,7 +273,7 @@ WHERE UserId = @UserId AND IsActive = @IsActive";
                     TempData["error"] = "Phone Number should be 11 numbers without any space";
                     return RedirectToAction("UserManagement");
                 }
-                if (IsPhoneNumberDuplicate(dataModel.UserId, dataModel.PhoneNumber))
+                if (IsPhoneNumberDuplicate(dataModel.PhoneNumber))
                 {
                     TempData["error"] = "User with this Phone Number already exits";
                     return RedirectToAction("UserManagement");
@@ -303,6 +325,35 @@ VALUES(@UserName,@Address,@PhoneNumber,@UserRole,@IsActive)";
                 cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
                 cmd.Parameters.AddWithValue("@IsActive", true);
                 cmd.Parameters.AddWithValue("@UserId", userID);
+                SqlDataAdapter adapter = new(cmd);
+                DataTable dt = new();
+                adapter.Fill(dt);
+                conn.Close();
+
+                return dt.Rows.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        private bool IsPhoneNumberDuplicate(string phoneNumber)
+        {
+            try
+            {
+                SqlConnection conn = new(_configuration.GetConnectionString("DbConnection"));
+                conn.Open();
+                string query = @"SELECT [UserId]
+      ,[UserName]
+      ,[Password] 
+      ,[Address]
+      ,[PhoneNumber]
+      ,[UserRole]
+      ,[IsActive]
+  FROM [dbo].[Customer] WHERE PhoneNumber = @PhoneNumber AND IsActive = @IsActive";
+                SqlCommand cmd = new(query, conn);
+                cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+                cmd.Parameters.AddWithValue("@IsActive", true);
                 SqlDataAdapter adapter = new(cmd);
                 DataTable dt = new();
                 adapter.Fill(dt);

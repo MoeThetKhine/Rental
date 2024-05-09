@@ -4,6 +4,7 @@
     ViewData["Title"] = "User Management";
     var success = TempData["success"];
     var error = TempData["error"];
+    var warning = TempData["warning"];
 
 }
 <h1>User Management</h1>
@@ -12,16 +13,24 @@
     <button class="btn btn-outline-danger my-3" type="button" onclick="btnLogout()">LOGOUT</button>
 </div>
 
-@if(success is not null)
+@if (success is not null)
 {
     <div class="alert alert-success" role="alert">
         @success
     </div>
 }
+
 @if (error is not null)
 {
     <div class="alert alert-danger" role="alert">
         @error
+    </div>
+}
+
+@if (warning is not null)
+{
+    <div class="alert alert-warning" role="alert">
+        @warning
     </div>
 }
 
@@ -37,7 +46,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model)
+        @foreach (var item in Model)
         {
             <tr>
                 <td>@item.UserName</td>
@@ -46,9 +55,9 @@
                 <td>@item.UserRole</td>
                 <td>@item.IsActive</td>
                 <td>
-                    @if(item.UserRole == "Admin")
+                    @if (item.UserRole == "Admin")
                     {
-                        <a style="color:grey; pointer-events:none;text-decoration: none;" class="btn btn-outline-success" >Edit</a>
+                        <a style="color:grey; pointer-events:none;text-decoration: none;" class="btn btn-outline-success">Edit</a>
                         <button class="btn btn-outline-danger" disabled>Delete</button>
                     }
                     else
@@ -59,18 +68,16 @@
                 </td>
             </tr>
         }
-
     </tbody>
 </table>
 
-@section scripts{
+@section scripts {
     <script>
         function btnDelete(id) {
 
             if (id == null || id == "")
                 return;
-            if (window.confirm("Are you sure you want to delete?"))
-            {
+            if (window.confirm("Are you sure you want to delete?")) {
                 window.location.href = `/User/Delete?id=${id}`;
             }
         }
@@ -80,8 +87,5 @@
                 window.location.href = `/User/LoginPage`;
             }
         }
-        
     </script>
 }
-
- 
