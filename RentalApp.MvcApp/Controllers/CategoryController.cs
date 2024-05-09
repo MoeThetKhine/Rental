@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RentalApp.MvcApp.Models.Entity;
 using RentalApp.MvcApp.Models.Request;
-using RentalApp.MvcApp.Models.ResponseModel;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -36,6 +34,7 @@ namespace RentalApp.MvcApp.Controllers
                 conn.Close();
                 string jsonStr = JsonConvert.SerializeObject(dt);
                 List<CategoryDataModel> lst = JsonConvert.DeserializeObject<List<CategoryDataModel>>(jsonStr)!;
+
                 return View(lst);
             }
             catch (Exception ex)
@@ -65,8 +64,8 @@ namespace RentalApp.MvcApp.Controllers
                 {
                     TempData["error"] = "Deleting Fail!";
                 }
-                return RedirectToAction("CategoryManagement");
 
+                return RedirectToAction("CategoryManagement");
             }
             catch (Exception ex)
             {
@@ -159,16 +158,8 @@ namespace RentalApp.MvcApp.Controllers
                 conn.Close();
                 string jsonStr = JsonConvert.SerializeObject(dt);
                 List<CategoryDataModel> lst = JsonConvert.DeserializeObject<List<CategoryDataModel>>(jsonStr)!;
+
                 return View(lst);
-
-                //CategoryDataModel dataModel = new();
-                //{
-                //    CategoryId = Convert.ToInt32(dt.Rows[0]["CategoryId"]),
-                //    CategoryName = Convert.ToString(dt.Rows[0]["CateoryName"])!,
-
-                //};
-                //return View(dataModel);
-
             }
             catch (Exception ex)
             {
@@ -179,7 +170,6 @@ namespace RentalApp.MvcApp.Controllers
         [HttpPost]
         public IActionResult Update(UpdateCategoryRequestModel requestModel)
         {
-          
             try
             {
                 SqlConnection conn = new(_configuration.GetConnectionString("DbConnection"));

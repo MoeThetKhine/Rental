@@ -33,28 +33,23 @@
             <th>Category Name</th>
             <th>IsActive</th>
             <th>Actions</th>
-            
         </tr>
     </thead>
     <tbody>
-       
-            @foreach(var item in Model)
-            {
-                <tr>
-                    <td>@item.CategoryId</td>
-                    <td>@item.CategoryName</td>
-                    <td>@item.IsActive</td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CategoryId</td>
+                <td>@item.CategoryName</td>
+                <td>@item.IsActive</td>
                 <td>
 
                     <a class="btn btn-outline-success" href="/Category/EditCategory/@item.CategoryId">Edit</a>
                     <button class="btn btn-outline-danger" onclick="btnDelete('@item.CategoryId')">Delete</button>
-                    
-                </td>
-                </tr>
 
-            }
-        
-        
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -64,18 +59,16 @@
 
             if (id == null || id == "")
                 return;
+
             if (window.confirm("Are you sure you want to delete?")) {
-                window.location.href = `/Category/Delete?id=${id}`;
+                window.location.href = `/Category/Delete/${id}`;
             }
         }
 
         function btnLogout() {
             if (window.confirm("Are you sure you want to LogOut?")) {
                 window.location.href = `/Category/LoginPage`;
-
             }
-
         }
-
     </script>
 }
