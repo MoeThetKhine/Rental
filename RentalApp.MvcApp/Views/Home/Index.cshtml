@@ -1,0 +1,53 @@
+﻿@* @{
+
+    ViewData["Title"] = "Home Page";
+    var successMsg = TempData["success"];
+    var failMsg = TempData["error"];
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @if (successMsg is not null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @successMsg
+                </div>
+            }
+            @if (failMsg is not null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @failMsg
+                </div>
+            }
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Login Page</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Home/Login">
+                        <label>User Name:</label>
+                        <input type="text" name="UserName" class="form-control" required />
+                        <br />
+                        <label>Password:</label>
+                        <input type="password" name="Password" class="form-control" required />
+                        <br />
+                        <button type="submit" class="btn btn-outline-dark float-end" onclick="btnLogin()">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function btnLogout() {
+            if (window.confirm("Now you can control User Management")) {
+                window.location.href = `/User/UserManagement`;
+            }
+        }
+
+    </script>
+}
+ *@

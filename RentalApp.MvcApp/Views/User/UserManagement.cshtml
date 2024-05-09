@@ -1,0 +1,87 @@
+﻿@using RentalApp.MvcApp.Models.ResponseModel;
+@model List<UserResponseModel>;
+@{
+    ViewData["Title"] = "User Management";
+    var success = TempData["success"];
+    var error = TempData["error"];
+
+}
+<h1>User Management</h1>
+<div class="d-flex justify-content-between">
+    <a href="/User/CreateUser" class="btn btn-outline-primary my-3">Create</a>
+    <button class="btn btn-outline-danger my-3" type="button" onclick="btnLogout()">LOGOUT</button>
+</div>
+
+@if(success is not null)
+{
+    <div class="alert alert-success" role="alert">
+        @success
+    </div>
+}
+@if (error is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @error
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Address</th>
+            <th>Phone Number</th>
+            <th>User Role</th>
+            <th>Is Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>@item.UserName</td>
+                <td>@item.Address</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.UserRole</td>
+                <td>@item.IsActive</td>
+                <td>
+                    @if(item.UserRole == "Admin")
+                    {
+                        <a style="color:grey; pointer-events:none;text-decoration: none;" class="btn btn-outline-success" >Edit</a>
+                        <button class="btn btn-outline-danger" disabled>Delete</button>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-success" href="/User/EditUser/@item.UserId">Edit</a>
+                        <button class="btn btn-outline-danger" onclick="btnDelete('@item.UserId')">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+        function btnDelete(id) {
+
+            if (id == null || id == "")
+                return;
+            if (window.confirm("Are you sure you want to delete?"))
+            {
+                window.location.href = `/User/Delete?id=${id}`;
+            }
+        }
+
+        function btnLogout() {
+            if (window.confirm("Are you sure you want to LogOut?")) {
+                window.location.href = `/User/LoginPage`;
+            }
+        }
+        
+    </script>
+}
+
+ 

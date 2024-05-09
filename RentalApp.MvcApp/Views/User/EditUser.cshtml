@@ -1,0 +1,38 @@
+﻿@using RentalApp.MvcApp.Models.Entity;
+@model List<UserDataModel>;
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+<h1>Edit User</h1>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-mt-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Edit User</h3>
+                </div>
+                <div class="card-body">
+                    @if(Model.Count > 0)
+                    {
+                        <form method="post" action="/User/Update">
+                            <input type="hidden" name="UserId" value="@Model[0].UserId"/><br />
+                            <label>User Name:</label>
+                            <input class="form-control" type="text" name="UserName" value="@Model[0].UserName" required /><br />
+                            <label>Address:</label>
+                            <input class="form-control" type="text" name="Address" value="@Model[0].Address" required /><br />
+                            <label>Phone Number:</label>
+                            <input class="form-control" type="tel" name="PhoneNumber" value="@Model[0].PhoneNumber" required /><br />
+                            <button class="btn btn-outline-info" type="submit">Update</button>
+                            <a href="/User/UserManagement" class="btn btn-primary" type="submit">Back</a>
+                        </form>
+                    }
+                    else{
+                        <h3>No data found!!</h3>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+﻿@using RentalApp.MvcApp.Models.Entity;
+@model CategoryDataModel;
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<h1>Edit Category</h1>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-mt-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Edit Category</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Category/Update">
+                        <input type="hidden" name="CategoryId" value="@Model[0].CategoryId" /><br />
+                        <label>Category Name:</label>
+                        <input class="form-control" type="text" name="CategoryName" value="@Model.CategoryName" required /><br />
+                        <button class="btn btn-outline-info" type="submit">Save</button>
+                        <a href="/User/UserManagement" class="btn btn-primary" type="submit">Back</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

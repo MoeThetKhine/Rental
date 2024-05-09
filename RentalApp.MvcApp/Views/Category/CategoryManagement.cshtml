@@ -1,0 +1,80 @@
+﻿@using RentalApp.MvcApp.Models.Entity;
+@model List<CategoryDataModel>;
+
+@{
+    ViewData["Title"] = "Category Management";
+    var success = TempData["success"];
+    var error = TempData["error"];
+}
+
+<h1>Category Management</h1>
+<div class="d-flex justify-content-between">
+    <a href="/Category/CreateCategory" class="btn btn-outline-primary my-3">Create</a>
+    <button class="btn btn-outline-danger my-3" type="button" onclick="btnLogout()">LOGOUT</button>
+</div>
+
+@if (success is not null)
+{
+    <div class="alert alert-success" role="alert">
+        @success
+    </div>
+}
+@if (error is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @error
+    </div>
+}
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Category Id</th>
+            <th>Category Name</th>
+            <th>IsActive</th>
+            <th>Actions</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+       
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item.CategoryId</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.IsActive</td>
+                <td>
+
+                    <a class="btn btn-outline-success" href="/Category/EditCategory/@item.CategoryId">Edit</a>
+                    <button class="btn btn-outline-danger" onclick="btnDelete('@item.CategoryId')">Delete</button>
+                    
+                </td>
+                </tr>
+
+            }
+        
+        
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+        function btnDelete(id) {
+
+            if (id == null || id == "")
+                return;
+            if (window.confirm("Are you sure you want to delete?")) {
+                window.location.href = `/Category/Delete?id=${id}`;
+            }
+        }
+
+        function btnLogout() {
+            if (window.confirm("Are you sure you want to LogOut?")) {
+                window.location.href = `/Category/LoginPage`;
+            }
+
+        }
+
+    </script>
+}
