@@ -117,7 +117,7 @@ namespace RentalApp.MvcApp.Controllers
                 }
 
                 string noChangesCaseQuery = @"SELECT * FROM Customer WHERE UserName = @UserName
-AND Address = @Address AND PhoneNumber = @PhoneNumber WHERE UserId = @UserId AND IsActive = @IsActive";
+AND Address = @Address AND PhoneNumber = @PhoneNumber AND UserId = @UserId AND IsActive = @IsActive";
                 List<SqlParameter> parameters = new()
                 {
                     new SqlParameter("@UserName", requestModel.UserName),
