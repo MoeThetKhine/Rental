@@ -100,7 +100,7 @@ namespace RentalApp.MvcApp.Controllers
                     TempData["error"] = "Phone Number should be 11 numbers";
                     return RedirectToAction("UserManagement");
                 }
-                else if(cleanedPhoneNumber.Length != 11)
+                else if (cleanedPhoneNumber.Length != 11)
                 {
                     TempData["error"] = "Phone Number should be 11 numbers without any space";
                     return RedirectToAction("UserManagement");
@@ -251,7 +251,7 @@ WHERE UserId = @UserId AND IsActive = @IsActive";
                     TempData["error"] = "Phone Number should be 11 numbers without any space";
                     return RedirectToAction("UserManagement");
                 }
-                if (IsPhoneNumberDuplicate(dataModel.PhoneNumber))
+                if (IsPhoneNumberDuplicate(dataModel.UserId, dataModel.PhoneNumber))
                 {
                     TempData["error"] = "User with this Phone Number already exits";
                     return RedirectToAction("UserManagement");
@@ -285,7 +285,7 @@ VALUES(@UserName,@Address,@PhoneNumber,@UserRole,@IsActive)";
                 throw new Exception(ex.Message);
             }
         }
-        private bool IsPhoneNumberDuplicate(string phoneNumber)
+        private bool IsPhoneNumberDuplicate(long userID, string phoneNumber)
         {
             try
             {
@@ -298,10 +298,11 @@ VALUES(@UserName,@Address,@PhoneNumber,@UserRole,@IsActive)";
       ,[PhoneNumber]
       ,[UserRole]
       ,[IsActive]
-  FROM [dbo].[Customer] WHERE PhoneNumber = @PhoneNumber AND IsActive = @IsActive";
+  FROM [dbo].[Customer] WHERE PhoneNumber = @PhoneNumber AND IsActive = @IsActive AND UserId != @UserId"; // 09773871112
                 SqlCommand cmd = new(query, conn);
                 cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
                 cmd.Parameters.AddWithValue("@IsActive", true);
+                cmd.Parameters.AddWithValue("@UserId", userID);
                 SqlDataAdapter adapter = new(cmd);
                 DataTable dt = new();
                 adapter.Fill(dt);
