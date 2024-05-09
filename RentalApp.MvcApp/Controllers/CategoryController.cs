@@ -41,7 +41,7 @@ namespace RentalApp.MvcApp.Controllers
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
         public IActionResult Delete(long id)
         {
@@ -75,14 +75,14 @@ namespace RentalApp.MvcApp.Controllers
         public IActionResult CreateCategory()
         {
             return View();
-           
+
         }
         [HttpPost]
         public IActionResult Create(CreateCategoryRequestModel requestModel)
         {
             try
             {
-                if(IsCategoryNameDuplicate(requestModel.CategoryName))
+                if (IsCategoryNameDuplicate(requestModel.CategoryName))
                 {
                     TempData["error"] = "Category Name alreay exits!";
                     return RedirectToAction("CategoryManagement");
@@ -96,8 +96,8 @@ namespace RentalApp.MvcApp.Controllers
                 cmd.Parameters.AddWithValue("@IsActive", true);
                 int result = cmd.ExecuteNonQuery();
                 conn.Close();
-                
-                if(result > 0)
+
+                if (result > 0)
                 {
                     TempData["success"] = "Creating Successful";
                 }
@@ -172,13 +172,19 @@ namespace RentalApp.MvcApp.Controllers
         {
             try
             {
+                if (IsCategoryNameDuplicate(requestModel.CategoryName))
+                {
+                    TempData["error"] = "Category Name alreay exits!";
+                    return RedirectToAction("CategoryManagement");
+                }
+
                 SqlConnection conn = new(_configuration.GetConnectionString("DbConnection"));
                 conn.Open();
                 string query = @"UPDATE Category SET CategoryName = @CategoryName 
 WHERE CategoryId = @CategoryId AND IsActive = @IsActive";
                 SqlCommand cmd = new(query, conn);
-                cmd.Parameters.AddWithValue("@UserId", requestModel.CategoryId);
-                cmd.Parameters.AddWithValue("@UserName", requestModel.CategoryName);
+                cmd.Parameters.AddWithValue("@CategoryId", requestModel.CategoryId);
+                cmd.Parameters.AddWithValue("@CategoryName", requestModel.CategoryName);
                 cmd.Parameters.AddWithValue("@IsActive", true);
                 int result = cmd.ExecuteNonQuery();
                 conn.Close();

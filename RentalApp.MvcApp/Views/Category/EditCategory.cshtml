@@ -1,5 +1,5 @@
 ﻿@using RentalApp.MvcApp.Models.Entity;
-@model CategoryDataModel;
+@model  List<CategoryDataModel>;
 
 @{
     ViewData["Title"] = "Edit Category";
@@ -18,7 +18,7 @@
                     <form method="post" action="/Category/Update">
                         <input type="hidden" name="CategoryId" value="@Model[0].CategoryId" /><br />
                         <label>Category Name:</label>
-                        <input class="form-control" type="text" name="CategoryName" value="@Model.CategoryName" required /><br />
+                        <input class="form-control" type="text" name="CategoryName" value="@Model[0].CategoryName" required /><br />
                         <button class="btn btn-outline-info" type="submit">Save</button>
                         <a href="/User/UserManagement" class="btn btn-primary" type="submit">Back</a>
                     </form>
